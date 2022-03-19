@@ -27,13 +27,13 @@ class MyDUMBListener(DUMBListener):
         self.__write(s)
 
     def enterSingleRule(self, ctx):
-        p("(" + ctx.getChild(0).getText())
+        p("\n(" + ctx.getChild(0).getText())
 
     def exitSingleRule(self, ctx):
         p("\n  {})".format(ctx.getChild(3).getText()))
 
     def enterLogical_entity(self, ctx):
-        p(ctx.getText())
+        p(" " + ctx.getText())
 
     def logicalExprAndOr(self, ctx):
         p("({}".format(ctx.getChild(1).getText()))
@@ -43,10 +43,15 @@ class MyDUMBListener(DUMBListener):
             p(")")
 
     def enterLogical_expr(self, ctx):
-        p(" ")
         if ctx.getChildCount() == 3:
+            p(" ")
             self.logicalExprAndOr(ctx)
 
+    def exitComparison_expr(self, ctx):
+        p(")")
+
+    def enterComparison_expr(self, ctx):
+        p(" (" + ctx.getChild(1).getText() + "")
         # for c in ctx.getChildren():
         #     print(c.getText())
 

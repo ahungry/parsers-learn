@@ -4,10 +4,10 @@ grammar DUMB;
 // Parser
 startRule  : singleRule* EOF ;
 
-singleRule : IF condition THEN conclusion SEMI ;
+singleRule : IF condition THEN conclusion ENDIF ;
 
 condition : logical_expr ;
-conclusion : IDENTIFIER ;
+conclusion : IDENTIFIER | prop_acc | call ;
 
 logical_expr
   : logical_expr AND logical_expr
@@ -19,6 +19,7 @@ logical_expr
 
 comparison_expr
   : comparison_operand comp_operator comparison_operand
+  | logical_entity comp_operator logical_entity
   | LPAREN comparison_expr RPAREN
   ;
 
@@ -36,6 +37,8 @@ arithmetic_expr
 
 logical_entity
   : (TRUE | FALSE)
+  | prop_acc
+  | string
   | IDENTIFIER
   ;
 
@@ -43,6 +46,11 @@ numeric_entity
   : DECIMAL
   | IDENTIFIER
   ;
+
+prop_acc : IDENTIFIER DOT (call | IDENTIFIER) ;
+string   : STRING ;
+value    : string | IDENTIFIER ;
+call     : IDENTIFIER LPAREN value RPAREN ;
 
 // Lexer
 TRUE       : 'true' ;
@@ -61,3 +69,6 @@ IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 SEMI       : ';' ;
+ENDIF      : 'end if' ;
+DOT        : '.' ;
+STRING     : '"' ~["]* '"' ;
