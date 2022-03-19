@@ -36,6 +36,8 @@ class MyVBListener(VBListener):
         p(")")
     def enterIfConditionStmt(self, ctx):
         p("")
+        if ctx.getChildCount() == 3:
+            p("___M__" + ctx.getChild(1).getText())
     def exitIfConditionStmt(self, ctx):
         p(") {\n  ")
     def enterICS_S_VariableOrProcedureCall(self, ctx):

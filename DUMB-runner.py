@@ -26,30 +26,33 @@ class MyDUMBListener(DUMBListener):
         self.__write(pfix)
         self.__write(s)
 
-    def enterLiteral(self, ctx: DUMBParser.LiteralContext):
-        return
-    def enterIfThenElseStmt(self, ctx: DUMBParser.IfThenElseStmtContext):
-        return
-    def enterIfBlockStmt(self, ctx):
-        p("IF (")
-    def exitIfBlockStmt(self, ctx):
-        p(")")
-    def enterIfConditionStmt(self, ctx):
-        p("")
-    def exitIfConditionStmt(self, ctx):
-        p(") {\n  ")
-    def enterICS_S_VariableOrProcedureCall(self, ctx):
-        p("")
-    def exitICS_S_VariableOrProcedureCall(self, ctx):
-        p("")
-    def enterAmbiguousIdentifier(self, ctx):
+    def enterSingleRule(self, ctx):
+        p("(" + ctx.getChild(0).getText())
+
+    def exitSingleRule(self, ctx):
+        p("\n  {})".format(ctx.getChild(3).getText()))
+
+    def enterLogical_entity(self, ctx):
         p(ctx.getText())
-    def enterICS_S_MemberCall(self, ctx):
-        p("::")
-    def exitICS_S_MemberCall(self, ctx):
+
+    def logicalExprAndOr(self, ctx):
+        p("({}".format(ctx.getChild(1).getText()))
+
+    def exitLogical_expr(self, ctx):
+        if ctx.getChildCount() == 3:
+            p(")")
+
+    def enterLogical_expr(self, ctx):
         p(" ")
-    def enterValueStmt(self, ctx):
-        p(ctx.getText())
+        if ctx.getChildCount() == 3:
+            self.logicalExprAndOr(ctx)
+
+        # for c in ctx.getChildren():
+        #     print(c.getText())
+
+        # print(ctx.getChildCount())
+        # print(ctx.getChildren())
+        # print(ctx.getText())
 
 def main(argv):
     inp = FileStream(argv[1])
@@ -65,7 +68,6 @@ def main(argv):
     walker.walk(listener, tree)
 
 if __name__ == "__main__":
-    print("begin")
+    print("begin\n")
     main(sys.argv)
-
-print(__name__)
+    print("\n")
