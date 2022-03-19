@@ -1,6 +1,9 @@
 *.interp
 *.tokens
 *.java
-*.py
+*Lexer.py
+*Listener.py
+*Parser.py
 *.class
 *.jar
+/__pycache__/
