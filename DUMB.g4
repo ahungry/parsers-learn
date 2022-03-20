@@ -2,14 +2,23 @@
 grammar DUMB;
 
 // Parser
-startRule  : singleRule* EOF ;
+startRule  : (singleRule | NL | WS)* EOF ;
 
-singleRule : IF condition THEN conclusion ENDIF ;
+singleRule
+  : ifthen
+  | method
+  | comment
+  ;
+
+ifthen : IF condition THEN statement ENDIF ;
+method : VISIBILITY SUB atom arglist statement+ ENDSUB ;
 
 atom : IDENTIFIER ;
 
 condition : logical_expr ;
-conclusion : atom | mcall | call | prop_acc | call ;
+statement : (atom | mcall | call | prop_acc | call) (NL | comment)+ ;
+
+comment: COMMENT ;
 
 logical_expr
   : logical_expr AND logical_expr
@@ -51,13 +60,19 @@ numeric_entity
   | IDENTIFIER
   ;
 
-mcall    : atom DOT atom WS* LPAREN WS* value WS* RPAREN ;
-prop_acc : atom DOT atom ;
-string   : STRING ;
-value    : string | IDENTIFIER ;
-call     : atom LPAREN value RPAREN ;
+args      : atom ','? ;
+arglist   : LPAREN args* RPAREN ;
+mcall     : atom DOT atom WS* LPAREN WS* value WS* RPAREN ;
+prop_acc  : atom DOT atom ;
+string    : STRING ;
+value     : string | IDENTIFIER ;
+call      : atom LPAREN value RPAREN ;
 
 // Lexer
+CLASS      : 'class' ;
+VISIBILITY : 'public' | 'protected' | 'private' ;
+SUB        : 'sub' ;
+ENDSUB     : 'end sub' ;
 TRUE       : 'true' ;
 FALSE      : 'false' ;
 IF         : 'if' ;
@@ -66,9 +81,9 @@ AND        : 'and' ;
 OR         : 'or' ;
 OP         : '*' | '+ ' | '/' | '-' ;
 EQ         : '=' ;
-COMMENT    : '\'' .+? (NL | EOF) -> skip ;
+COMMENT    : '\'' .+? (NL | EOF) ;
+NL         : ('\r\n' | '\n' | EOF) ;
 WS         : [ \r\t\u000C\n]+ -> skip ;
-NL         : '\r\n' | '\n' ;
 DECIMAL    : '-'?[0-9]+('.'[0-9]+)? ;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 LPAREN     : '(' ;

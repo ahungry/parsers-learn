@@ -27,12 +27,24 @@ class MyDUMBListener(DUMBListener):
         self.__write(s)
 
     def enterSingleRule(self, ctx):
-        p("\n(" + ctx.getChild(0).getText())
+        print('')
 
     def exitSingleRule(self, ctx):
-        p(")\n")
+        print('')
 
-    def enterConclusion(self, ctx):
+    def enterIfthen(self, ctx):
+        p("(" + ctx.getChild(0).getText() + "")
+
+    def exitIfthen(self,ctx):
+        p(")")
+
+    def exitComment(self, ctx):
+        p("\n")
+
+    def enterComment(self, ctx):
+        p("  ;;" + ctx.getText().rstrip())
+
+    def enterStatement(self, ctx):
         p("\n  ")
 
     def enterAtom(self, ctx):
@@ -76,6 +88,15 @@ class MyDUMBListener(DUMBListener):
 
     def exitProp_acc(self, ctx):
         p(")")
+
+    def exitMethod(self, ctx):
+        p(")")
+
+    def enterMethod(self, ctx):
+        p("(defmethod")
+
+    def enterArglist(self, ctx):
+        p(" " + ctx.getText())
 
 def main(argv):
     inp = FileStream(argv[1])
