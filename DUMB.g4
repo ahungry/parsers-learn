@@ -6,8 +6,10 @@ startRule  : singleRule* EOF ;
 
 singleRule : IF condition THEN conclusion ENDIF ;
 
+atom : IDENTIFIER ;
+
 condition : logical_expr ;
-conclusion : IDENTIFIER | prop_acc | call ;
+conclusion : atom | mcall | call | prop_acc | call ;
 
 logical_expr
   : logical_expr AND logical_expr
@@ -37,9 +39,11 @@ arithmetic_expr
 
 logical_entity
   : (TRUE | FALSE)
+  | mcall
+  | call
   | prop_acc
   | string
-  | IDENTIFIER
+  | atom
   ;
 
 numeric_entity
@@ -47,10 +51,11 @@ numeric_entity
   | IDENTIFIER
   ;
 
-prop_acc : IDENTIFIER DOT (call | IDENTIFIER) ;
+mcall    : atom DOT atom WS* LPAREN WS* value WS* RPAREN ;
+prop_acc : atom DOT atom ;
 string   : STRING ;
 value    : string | IDENTIFIER ;
-call     : IDENTIFIER LPAREN value RPAREN ;
+call     : atom LPAREN value RPAREN ;
 
 // Lexer
 TRUE       : 'true' ;

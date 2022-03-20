@@ -30,13 +30,19 @@ class MyDUMBListener(DUMBListener):
         p("\n(" + ctx.getChild(0).getText())
 
     def exitSingleRule(self, ctx):
-        p("\n  {})".format(ctx.getChild(3).getText()))
+        p(")\n")
 
-    def enterLogical_entity(self, ctx):
+    def enterConclusion(self, ctx):
+        p("\n  ")
+
+    def enterAtom(self, ctx):
+        p(" " + ctx.getText())
+
+    def enterString(self, ctx):
         p(" " + ctx.getText())
 
     def logicalExprAndOr(self, ctx):
-        p("({}".format(ctx.getChild(1).getText()))
+        p("({} ".format(ctx.getChild(1).getText()))
 
     def exitLogical_expr(self, ctx):
         if ctx.getChildCount() == 3:
@@ -51,13 +57,25 @@ class MyDUMBListener(DUMBListener):
         p(")")
 
     def enterComparison_expr(self, ctx):
-        p(" (" + ctx.getChild(1).getText() + "")
-        # for c in ctx.getChildren():
-        #     print(c.getText())
+        p(" (" + ctx.getChild(1).getText() + " ")
 
-        # print(ctx.getChildCount())
-        # print(ctx.getChildren())
-        # print(ctx.getText())
+    def enterCall(self, ctx):
+        p(" (")
+
+    def exitCall(self, ctx):
+        p(")")
+
+    def enterMcall(self, ctx):
+        p("(.")
+
+    def exitMcall(self, ctx):
+        p(")")
+
+    def enterProp_acc(self, ctx):
+        p("(.")
+
+    def exitProp_acc(self, ctx):
+        p(")")
 
 def main(argv):
     inp = FileStream(argv[1])
