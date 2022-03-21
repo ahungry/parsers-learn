@@ -11,8 +11,7 @@ singleRule
   ;
 
 ifthen : IF condition THEN statement ENDIF ;
-method : VISIBILITY SUB atom arglist statement+ ENDSUB ;
-
+method : VISIBILITY SUB atom arglist NL+ statement+ ENDSUB ;
 atom : IDENTIFIER ;
 
 condition : logical_expr ;
@@ -83,7 +82,7 @@ OP         : '*' | '+ ' | '/' | '-' ;
 EQ         : '=' ;
 COMMENT    : '\'' .+? (NL | EOF) ;
 NL         : ('\r\n' | '\n' | EOF) ;
-WS         : [ \r\t\u000C\n]+ -> skip ;
+WS         : [ \t\u000C]+ -> skip ;
 DECIMAL    : '-'?[0-9]+('.'[0-9]+)? ;
 IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 LPAREN     : '(' ;
