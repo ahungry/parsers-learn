@@ -2,22 +2,24 @@
 grammar DUMB;
 
 // Parser
-startRule  : (singleRule | NL | WS)* EOF ;
+startRule  : (singleRule | NL )* EOF ;
 
 singleRule
   : ifthen
-  | method
+  | class_def
   | comment
   ;
 
-ifthen : IF condition THEN statement ENDIF ;
-method : VISIBILITY SUB atom arglist NL+ statement+ ENDSUB ;
+ifthen : IF condition THEN statement+ ENDIF ;
+method : VISIBILITY SUB atom arglist NL+ statement+ ENDSUB NL+ ;
 atom : IDENTIFIER ;
 
 condition : logical_expr ;
-statement : (atom | mcall | call | prop_acc | call) (NL | comment)+ ;
+statement : NL* (atom | mcall | call | prop_acc | call) (NL | comment)+ ;
 
 comment: COMMENT ;
+
+class_def : CLASS atom (NL | comment)+ method* ENDCLASS ;
 
 logical_expr
   : logical_expr AND logical_expr
@@ -61,23 +63,54 @@ numeric_entity
 
 args      : atom ','? ;
 arglist   : LPAREN args* RPAREN ;
-mcall     : atom DOT atom WS* LPAREN WS* value WS* RPAREN ;
+mcall     : atom DOT atom LPAREN value RPAREN ;
 prop_acc  : atom DOT atom ;
 string    : STRING ;
 value     : string | IDENTIFIER ;
 call      : atom LPAREN value RPAREN ;
 
+
+// Fragments for case insensitivity
+fragment A:('a'|'A');
+fragment B:('b'|'B');
+fragment C:('c'|'C');
+fragment D:('d'|'D');
+fragment E:('e'|'E');
+fragment F:('f'|'F');
+fragment G:('g'|'G');
+fragment H:('h'|'H');
+fragment I:('i'|'I');
+fragment J:('j'|'J');
+fragment K:('k'|'K');
+fragment L:('l'|'L');
+fragment M:('m'|'M');
+fragment N:('n'|'N');
+fragment O:('o'|'O');
+fragment P:('p'|'P');
+fragment Q:('q'|'Q');
+fragment R:('r'|'R');
+fragment S:('s'|'S');
+fragment T:('t'|'T');
+fragment U:('u'|'U');
+fragment V:('v'|'V');
+fragment W:('w'|'W');
+fragment X:('x'|'X');
+fragment Y:('y'|'Y');
+fragment Z:('z'|'Z');
+
 // Lexer
-CLASS      : 'class' ;
-VISIBILITY : 'public' | 'protected' | 'private' ;
-SUB        : 'sub' ;
-ENDSUB     : 'end sub' ;
-TRUE       : 'true' ;
-FALSE      : 'false' ;
-IF         : 'if' ;
-THEN       : 'then' ;
-AND        : 'and' ;
-OR         : 'or' ;
+CLASS      : C L A S S ;
+VISIBILITY : P U B L I C | P R O T E C T E D | P R I V A T E ;
+SUB        : S U B ;
+ENDSUB     : E N D ' ' S U B;
+TRUE       : T R U E ;
+FALSE      : F A L S E ;
+IF         : I F ;
+THEN       : T H E N ;
+AND        : A N D ;
+OR         : O R ;
+ENDIF      : E N D ' ' I F ;
+ENDCLASS   : E N D ' ' C L A S S ;
 OP         : '*' | '+ ' | '/' | '-' ;
 EQ         : '=' ;
 COMMENT    : '\'' .+? (NL | EOF) ;
@@ -88,6 +121,5 @@ IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 SEMI       : ';' ;
-ENDIF      : 'end if' ;
 DOT        : '.' ;
 STRING     : '"' ~["]* '"' ;

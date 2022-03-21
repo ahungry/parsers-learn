@@ -93,7 +93,13 @@ class MyDUMBListener(DUMBListener):
         p(")")
 
     def enterMethod(self, ctx):
-        p("(defmethod")
+        p("\n  (defmethod")
+
+    def exitClass_def(self, ctx):
+        p(")")
+
+    def enterClass_def(self, ctx):
+        p("(defclass")
 
     def enterArglist(self, ctx):
         p(" " + ctx.getText())
