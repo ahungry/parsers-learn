@@ -1,3 +1,7 @@
-{
- :deps {clj-antlr/clj-antlr {:mvn/version "0.2.12"}}
- }
+;; https://clojure.org/guides/deps_and_cli
+;;  https://practical.li/clojure/clojure-cli/projects/configure-repl-startup.html
+{:deps {clj-antlr/clj-antlr {:mvn/version "0.2.12"}}
+ :aliases {
+           :env/dev {:extra-paths ["dev"]}
+           :run {:main-opts []
+                 :exec-fn clj-vb.core/main}}}
