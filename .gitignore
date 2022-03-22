@@ -7,3 +7,5 @@
 *.class
 *.jar
 /__pycache__/
+.cpcache/
+.nrepl-port

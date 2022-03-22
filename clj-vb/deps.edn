@@ -1,0 +1,3 @@
+{
+ :deps {clj-antlr/clj-antlr {:mvn/version "0.2.12"}}
+ }
