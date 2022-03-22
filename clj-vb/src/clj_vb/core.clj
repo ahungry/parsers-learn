@@ -16,8 +16,30 @@
   (apply -main xs))
 
 
+(defn recursive-filter
+  "Apply a filter function F to each element in each
+  collection (recursively) in XS."
+  [f xs]
+  (map (fn [x]
+         (if (coll? x)
+           (recursive-filter f (filter f x))
+           x)) (filter (fn [x] (or (coll? x) (f x))) xs)))
+
+(defn is-skippable? [x]
+  (or (= "\r\n" x)
+      (and (coll? x) (= :comment (first x)))))
+
+(def is-keepable? (complement is-skippable?))
+
+(defn get-tree []
+  (->> (tree)
+       (recursive-filter is-keepable?)))
+
 (defn cleaner [xs]
   (filter #(not (string? %)) xs))
+
+(defn newline-cleaner [xs]
+  (filter #(not (= "\r\n" %)) xs))
 
 (defn ast-start-rule [& xs] xs)
 (defn ast-single-rule [& xs] xs)
@@ -29,15 +51,32 @@
 (defn ast-string [x]
   (if (string? x) (read-string x) x))
 
-(defn ast-logical-expr [& xs] xs)
+(defn ast-comment [comment-string]
+  `(my-comment ~comment-string))
+
+(defn ast-logical-expr [le1 & xs]
+  (if (not (= 2 (count xs)))
+    le1
+    (let [[op le2] xs]
+      ;; (prn le1)
+      ;; (prn le2)
+      (prn op)
+       `(~(symbol op) ~le1 ~le2)
+      )))
+
 (defn ast-logical-entity [x] x)
-(defn ast-statement [x & _] (list x))
+
+(defn ast-statement [& xs]
+  xs)
+
 (defn ast-comp-operator [x] (symbol x))
 
-(defn ast-condition [[cond1 pred cond2] & xs]
-  `(~(symbol pred) ~@cond1 ~@cond2))
+(defn ast-condition [x]
+  x)
 
-(defn ast-if-then [& xs] xs)
+(defn ast-if-then [& xs]
+  (let [[pred & statements] (cleaner xs)]
+    `(if ~pred ~@statements)))
 
 (defn ast-comparison-expr [le1 op le2]
   `(~op ~le1 ~le2))
@@ -80,5 +119,11 @@
     :comp_operator 'ast-comp-operator
     :comparison_expr 'ast-comparison-expr
     :arglist 'ast-arglist
+    :comment 'ast-comment
     :atom 'ast-atom}
    tree))
+
+(defn run []
+  (-> (get-tree)
+      process-tree
+      eval))
