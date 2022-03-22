@@ -50,7 +50,7 @@ arithmetic_expr
   ;
 
 logical_entity
-  : (TRUE | FALSE)
+  : boolean
   | mcall
   | call
   | prop_acc
@@ -63,7 +63,8 @@ numeric_entity
   | IDENTIFIER
   ;
 
-assignment : atom EQ (atom | numeric_entity | string) ;
+boolean    : ( TRUE | FALSE ) ;
+assignment : atom EQ (atom | numeric_entity | string | logical_entity) ;
 dim        : DIM atom (COMMA atom)*;
 args       : atom ','? ;
 arglist    : LPAREN args* RPAREN ;

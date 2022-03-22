@@ -16,6 +16,16 @@
   (apply -main xs))
 
 
+(def *bindings* (atom {}))
+
+(defn my-defvar [vars]
+  (map (fn [v]
+         (swap! *bindings* (fn [m] (update-in m [(keyword v)] (fn [_] :nil)))))
+       vars))
+
+(defn my-set [sym val]
+  (swap! *bindings* (fn [m] (update-in m [(keyword sym)] (fn [_] val)))))
+
 (defn recursive-filter
   "Apply a filter function F to each element in each
   collection (recursively) in XS."
@@ -82,7 +92,7 @@
 
 (defn ast-mcall [& xs]
   (let [[obj prop & args] (cleaner xs)]
-    `(my-call ~obj ~prop ~@args)))
+    `(my-call ~obj ~prop (quote ~@args))))
 
 (defn ast-prop-acc [& xs]
   (let [clean (cleaner xs)]
@@ -101,7 +111,10 @@
     `(my-defmethod ~name ~arglist ~@statements)))
 
 (defn ast-dim [_ & ids]
-  `(my-defvar [~@(filter symbol? ids)]))
+  `(my-defvar (quote [~@(filter symbol? ids)])))
+
+(defn ast-boolean [x]
+  (symbol x))
 
 (defn ast-numerical-entity [n]
   (read-string n))
@@ -122,6 +135,7 @@
     :method 'ast-method
     :string 'ast-string
     :value 'ast-value
+    :boolean 'ast-boolean
     :class_def 'ast-class-def
     :numeric_entity 'ast-numerical-entity
     :ifthen 'ast-if-then
