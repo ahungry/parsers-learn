@@ -1,0 +1,2 @@
+;; -*- mode: clojure; -*-
+{:known-macros [clojure.pprint/pprint]}
