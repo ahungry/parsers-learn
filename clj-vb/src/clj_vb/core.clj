@@ -60,10 +60,7 @@
   (if (not (= 2 (count xs)))
     le1
     (let [[op le2] xs]
-      ;; (prn le1)
-      ;; (prn le2)
-      (prn op)
-       `(~(symbol op) ~le1 ~le2)
+      `(~(symbol op) ~le1 ~le2)
       )))
 
 (defn ast-logical-entity [x] x)
