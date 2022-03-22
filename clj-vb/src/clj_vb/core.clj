@@ -27,6 +27,8 @@
 
 (defn is-skippable? [x]
   (or (= "\r\n" x)
+      (= "<EOF>" x)
+      (= nil x)
       (and (coll? x) (= :comment (first x)))))
 
 (def is-keepable? (complement is-skippable?))
@@ -41,8 +43,8 @@
 (defn newline-cleaner [xs]
   (filter #(not (= "\r\n" %)) xs))
 
-(defn ast-start-rule [& xs] xs)
-(defn ast-single-rule [& xs] xs)
+(defn ast-start-rule [& xs] `(do ~@xs))
+(defn ast-single-rule [& xs] (first xs))
 
 (defn ast-atom [x]
   (if (string? x) (symbol x) x))
