@@ -5,9 +5,12 @@
 
 ;; (clojure.pprint 3)
 
-(defn -main [& xs]
+(defn tree []
   (def dumb (antlr/parser (str (System/getProperty "user.dir") "/DUMB.g4")))
-  (clojure.pprint/pprint (dumb (slurp "DUMB.asp"))))
+  (dumb (slurp "DUMB.asp")))
+
+(defn -main [& xs]
+  (-> (tree) clojure.pprint/pprint))
 
 (defn main [& xs]
   (apply -main xs))
