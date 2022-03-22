@@ -8,6 +8,8 @@ singleRule
   : ifthen
   | class_def
   | comment
+  | dim
+  | assignment
   ;
 
 ifthen : IF condition THEN statement+ ENDIF ;
@@ -61,13 +63,15 @@ numeric_entity
   | IDENTIFIER
   ;
 
-args      : atom ','? ;
-arglist   : LPAREN args* RPAREN ;
-mcall     : atom DOT atom LPAREN value RPAREN ;
-prop_acc  : atom DOT atom ;
-string    : STRING ;
-value     : string | IDENTIFIER ;
-call      : atom LPAREN value RPAREN ;
+assignment : atom EQ (atom | numeric_entity | string) ;
+dim        : DIM atom ;
+args       : atom ','? ;
+arglist    : LPAREN args* RPAREN ;
+mcall      : atom DOT atom LPAREN value RPAREN ;
+prop_acc   : atom DOT atom ;
+string     : STRING ;
+value      : string | IDENTIFIER ;
+call       : atom LPAREN value RPAREN ;
 
 
 // Fragments for case insensitivity
@@ -99,6 +103,7 @@ fragment Y:('y'|'Y');
 fragment Z:('z'|'Z');
 
 // Lexer
+DIM        : D I M ;
 CLASS      : C L A S S ;
 VISIBILITY : P U B L I C | P R O T E C T E D | P R I V A T E ;
 SUB        : S U B ;

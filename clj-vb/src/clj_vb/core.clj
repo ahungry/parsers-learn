@@ -100,6 +100,17 @@
         [name arglist & statements] clean]
     `(my-defmethod ~name ~arglist ~@statements)))
 
+(defn ast-dim [_ id]
+  `(my-defvar ~id))
+
+(defn ast-numerical-entity [n]
+  (read-string n))
+
+(defn ast-assignment [varname _ atom]
+  `(my-set ~varname ~atom))
+
+(defn ast-stub [& xs] xs)
+
 (defn process-tree [tree]
   (clojure.walk/prewalk-replace
    {:startRule 'ast-start-rule
@@ -112,6 +123,7 @@
     :string 'ast-string
     :value 'ast-value
     :class_def 'ast-class-def
+    :numeric_entity 'ast-numerical-entity
     :ifthen 'ast-if-then
     :prop_acc 'ast-prop-acc
     :mcall 'ast-mcall
@@ -119,10 +131,13 @@
     :comparison_expr 'ast-comparison-expr
     :arglist 'ast-arglist
     :comment 'ast-comment
+    :assignment 'ast-assignment
+    :dim 'ast-dim
     :atom 'ast-atom}
    tree))
 
 (defn run []
-  (-> (get-tree)
-      process-tree
-      eval))
+  (->> (get-tree)
+       process-tree
+       eval
+       (recursive-filter is-keepable?)))
