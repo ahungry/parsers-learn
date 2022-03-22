@@ -16,15 +16,15 @@
   (apply -main xs))
 
 
-(def *bindings* (atom {}))
+(def *bindings (atom {}))
 
 (defn my-defvar [vars]
   (map (fn [v]
-         (swap! *bindings* (fn [m] (update-in m [(keyword v)] (fn [_] :nil)))))
+         (swap! *bindings (fn [m] (update-in m [(keyword v)] (fn [_] :nil)))))
        vars))
 
 (defn my-set [sym val]
-  (swap! *bindings* (fn [m] (update-in m [(keyword sym)] (fn [_] val)))))
+  (swap! *bindings (fn [m] (update-in m [(keyword sym)] (fn [_] val)))))
 
 (defn recursive-filter
   "Apply a filter function F to each element in each
@@ -111,18 +111,25 @@
     `(my-defmethod ~name ~arglist ~@statements)))
 
 (defn ast-dim [_ & ids]
-  `(my-defvar (quote [~@(filter symbol? ids)])))
+  `(do ~@(map (fn [id] `(def ~id)) (filter symbol? ids)))
+  ;; `(my-defvar (quote [~@(filter symbol? ids)]))
+  )
 
 (defn ast-boolean [x]
-  (symbol x))
+  (if (= x "true") true false))
 
 (defn ast-numerical-entity [n]
   (read-string n))
 
 (defn ast-assignment [varname _ atom]
-  `(my-set ~varname ~atom))
+  ;; `(my-set (quote ~varname) ~atom)
+  `(def ~varname ~atom)
+  )
 
 (defn ast-stub [& xs] xs)
+
+(defn conclusion [] 3)
+(defn my-prop [] true)
 
 (defn process-tree [tree]
   (clojure.walk/prewalk-replace
