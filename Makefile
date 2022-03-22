@@ -9,7 +9,10 @@ compile:
 
 run:
 	grun $(GRAMMAR) startRule -tree $(GRAMMAR).asp
-	python3.8 $(GRAMMAR)-runner.py $(GRAMMAR).asp
+	python3 $(GRAMMAR)-runner.py $(GRAMMAR).asp
+
+clojure:
+	clj -Sdeps '{:deps {clj-antlr/clj-antlr {:mvn/version "0.2.12"}}}' -e "(require ['clj-antlr.core :as 'antlr])" -r
 
 get-jar:
 	curl -O https://www.antlr.org/download/antlr-4.9.3-complete.jar
