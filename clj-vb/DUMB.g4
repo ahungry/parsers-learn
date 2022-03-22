@@ -64,7 +64,7 @@ numeric_entity
   ;
 
 assignment : atom EQ (atom | numeric_entity | string) ;
-dim        : DIM atom ;
+dim        : DIM atom (COMMA atom)*;
 args       : atom ','? ;
 arglist    : LPAREN args* RPAREN ;
 mcall      : atom DOT atom LPAREN value RPAREN ;
@@ -126,5 +126,6 @@ IDENTIFIER : [a-zA-Z_][a-zA-Z_0-9]* ;
 LPAREN     : '(' ;
 RPAREN     : ')' ;
 SEMI       : ';' ;
+COMMA      : ',' ;
 DOT        : '.' ;
 STRING     : '"' ~["]* '"' ;

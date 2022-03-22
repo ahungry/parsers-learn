@@ -5,6 +5,7 @@ if cond1 and cond2 or cond3 then
 end if
 
 dim myvar
+dim a, b, c
 
 myvar = 30
 

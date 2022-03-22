@@ -100,8 +100,8 @@
         [name arglist & statements] clean]
     `(my-defmethod ~name ~arglist ~@statements)))
 
-(defn ast-dim [_ id]
-  `(my-defvar ~id))
+(defn ast-dim [_ & ids]
+  `(my-defvar [~@(filter symbol? ids)]))
 
 (defn ast-numerical-entity [n]
   (read-string n))
