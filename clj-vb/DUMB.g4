@@ -7,6 +7,7 @@ startRule  : (singleRule | NL )* EOF ;
 singleRule
   : ifthen
   | class_def
+  | fun
   | comment
   | dim
   | assignment
@@ -14,10 +15,11 @@ singleRule
 
 ifthen : IF condition THEN statement+ ENDIF ;
 method : VISIBILITY SUB atom arglist NL+ statement+ ENDSUB NL+ ;
+fun : FUNCTION atom arglist NL+ statement+  ENDFUNCTION NL+ ;
 atom : IDENTIFIER ;
 
 condition : logical_expr ;
-statement : NL* (atom | mcall | call | prop_acc | call) (NL | comment)+ ;
+statement : NL* (atom | mcall | call | prop_acc | call | assignment) (NL | comment)+ ;
 
 comment: COMMENT ;
 
@@ -117,6 +119,8 @@ AND        : A N D ;
 OR         : O R ;
 ENDIF      : E N D ' ' I F ;
 ENDCLASS   : E N D ' ' C L A S S ;
+FUNCTION   : F U N C T I O N ;
+ENDFUNCTION: E N D ' ' F U N C T I O N ;
 OP         : '*' | '+ ' | '/' | '-' ;
 EQ         : '=' ;
 COMMENT    : '\'' .+? (NL | EOF) ;

@@ -1,6 +1,10 @@
 ' -*- mode: basic; -*-
 ' this is a comment, ignore me
 
+function conclusion()
+  conclusion = 33
+End FunCtiOn
+
 dim cond1, cond2, cond3
 
 cond1 = true

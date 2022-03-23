@@ -57,7 +57,7 @@
 (defn ast-single-rule [& xs] (first xs))
 
 (defn ast-atom [x]
-  (if (string? x) (symbol x) x))
+  (if (string? x) (symbol (clojure.string/lower-case x)) x))
 
 (defn ast-value [& xs] xs)
 (defn ast-string [x]
@@ -105,6 +105,8 @@
 (defn ast-arglist [open & xs]
   (take (- (count xs) 1) xs))
 
+(defn ast-args [x] x)
+
 (defn ast-method [& xs]
   (let [clean (cleaner xs)
         [name arglist & statements] clean]
@@ -126,6 +128,26 @@
   `(def ~varname ~atom)
   )
 
+(defn slice [xs start end]
+  (subvec (vec xs) start end))
+
+(defn fooo [] 3)
+(defn bar [] 3)
+
+(defmacro my-fn [args & xs]
+  `(fn [~@args] ~@xs))
+
+(defn ast-fun [_ name arglist & statements]
+  (let [stmt1 (slice statements 0 (- (count statements) 1))
+        stmt2 (slice stmt1 0 (- (count stmt1) 1))
+        result (last stmt1)]
+    (prn stmt2)
+    (prn result)
+    `(def ~name (my-fn ~arglist ~@stmt2 ~@result))
+    ;; `(def ~name '(fn [] 33))
+    ;; `(def ~name (fn [] '~@stmt2 '~@result))
+    ))
+
 (defn ast-stub [& xs] xs)
 
 (defn conclusion [] 3)
@@ -144,6 +166,7 @@
     :value 'ast-value
     :boolean 'ast-boolean
     :class_def 'ast-class-def
+    :fun 'ast-fun
     :numeric_entity 'ast-numerical-entity
     :ifthen 'ast-if-then
     :prop_acc 'ast-prop-acc
@@ -151,6 +174,7 @@
     :comp_operator 'ast-comp-operator
     :comparison_expr 'ast-comparison-expr
     :arglist 'ast-arglist
+    :args 'ast-args
     :comment 'ast-comment
     :assignment 'ast-assignment
     :dim 'ast-dim

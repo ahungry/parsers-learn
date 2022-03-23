@@ -1,8 +1,8 @@
 ;; (setq cider-clojure-cli-aliases ":env/dev")
 (ns user
-  (:require [clj-vb.core :as vb]
-            [clojure.repl :refer :all]))
+  (:require [clj-vb.core :as vb]))
 
-(prn "Loaded my user.clj")
+;; Load all the stuff like doc etc.
+(apply require clojure.main/repl-requires)
 
 (defn blub [] 3)
