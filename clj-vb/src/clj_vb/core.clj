@@ -1,7 +1,7 @@
 (ns clj-vb.core
   (:require [clj-antlr.core :as antlr]
-            ;; [clojure.core :refer [pprint]]
-            ))
+            [clojure.pprint :refer [pprint]]
+            [clojure.walk]))
 
 ;; (clojure.pprint 3)
 
@@ -10,7 +10,7 @@
   (dumb (slurp "DUMB.asp")))
 
 (defn -main [& xs]
-  (-> (tree) clojure.pprint/pprint))
+  (-> (tree) pprint))
 
 (defn main [& xs]
   (apply -main xs))
